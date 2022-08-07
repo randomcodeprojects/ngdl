@@ -51,10 +51,6 @@ ngdl -h | --help`);
 	}
 
 	if (args.d) {
-		if (!(args.d instanceof Array) || typeof args.d !== "string") {
-			console.log("Error: Did Not Receive String Or Array");
-			e(1);
-		}
 		if (typeof args.d === "number") {
 			await downloadAudio(args.d);
 			e(0);
@@ -72,10 +68,6 @@ ngdl -h | --help`);
 	}
 
 	if (args.i) {
-		if (!(args.i instanceof Array) || typeof args.i !== "string") {
-			console.log("Error: Did Not Receive String Or Array");
-			e(1);
-		}
 		if (typeof args.i === "number") {
 			await getAudioInfo(args.i);
 			e(0);
