@@ -1,13 +1,17 @@
 import { JSDOM } from "jsdom";
 import axios from "axios";
 
+async function _getData(id: number) {
+	return (await axios.get(`https://newgrounds.com/audio/listen/${id}`))
+		.data as string;
+}
+
 /**
  * Gets The Title Of A Song In Newgrounds
  * @param id {number}
  */
 export async function getTitle(id: number) {
-	const data = (await axios.get(`https://newgrounds.com/audio/listen/${id}`))
-		.data as string;
+	const data = await _getData(id);
 
 	const { document } = new JSDOM(data).window;
 
@@ -19,8 +23,7 @@ export async function getTitle(id: number) {
  * @param id {number}
  */
 export async function getLinkTags(id: number) {
-	const data = (await axios.get(`https://newgrounds.com/audio/listen/${id}`))
-		.data as string;
+	const data = await _getData(id);
 
 	const { document } = new JSDOM(data).window;
 
@@ -45,8 +48,7 @@ export async function getLinkTags(id: number) {
  * @param id {number}
  */
 export async function getMetaTags(id: number) {
-	const data = (await axios.get(`https://newgrounds.com/audio/listen/${id}`))
-		.data as string;
+	const data = await _getData(id);
 
 	const { document } = new JSDOM(data).window;
 
@@ -75,8 +77,7 @@ export async function getMetaTags(id: number) {
  * @param id {number}
  */
 export async function getSongFileURL(id: number) {
-	const data = (await axios.get(`https://newgrounds.com/audio/listen/${id}`))
-		.data as string;
+	const data = await _getData(id);
 
 	const { document } = new JSDOM(data).window;
 
