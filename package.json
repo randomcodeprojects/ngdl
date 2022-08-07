@@ -12,7 +12,7 @@
 	"dependencies": {
 		"axios": "^0.26.0",
 		"download": "^8.0.0",
-		"got": "^11.8.5",
+		"got": ">=11.8.5",
 		"jsdom": "^19.0.0",
 		"minimist": "^1.2.6",
 		"sanitize-filename": "^1.6.3"
