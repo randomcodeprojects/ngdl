@@ -1,4 +1,4 @@
-import { getSongFileURL, getTitle, getMetaTags } from ".";
+import { getSongFileURL, getTitle, getMetaTags } from "./lib";
 import sanitize from "sanitize-filename";
 import pkg from "./package.json";
 import minimist from "minimist";
