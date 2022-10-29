@@ -7,22 +7,24 @@ import download from "download";
 (async () => {
 	const args = minimist(process.argv.slice(2));
 
-	const OUT_DIR =
-		args.o || args.output || process.platform === "win32"
+	const defaultOutDir =
+		process.platform === "win32"
 			? `${process.env.USERPROFILE}\\Downloads`
 			: `${process.env.HOME}/ngdl`;
+
+	const outDir = typeof args.o !== "undefined" ? args.o : defaultOutDir;
 
 	async function downloadAudio(id: number) {
 		const url = await getSongFileURL(id);
 		const name = await getTitle(id);
 
-		await download(url, OUT_DIR, {
+		await download(url, outDir, {
 			filename: `${sanitize(name) || id.toString()}.mp3`,
 			followRedirect: true,
 		});
 	}
 
-	async function logInfoToConsole(id: number) {
+	async function getInfo(id: number) {
 		const info = await getMetaTags(id);
 		console.log(`Title: ${info["og:title"]}
 Description: ${info["og:description"]}
@@ -52,14 +54,12 @@ ngdl -h -> Shows This Help Message`;
 	}
 
 	if (args.i) {
-		if (typeof args.i === "number") await logInfoToConsole(args.i);
-		if (typeof args.i === "string")
-			await logInfoToConsole(parseInt(args.i));
+		if (typeof args.i === "number") await getInfo(args.i);
+		if (typeof args.i === "string") await getInfo(parseInt(args.i));
 		if (typeof args.i === "object" && Array.isArray(args.i)) {
 			for (let id of args.i) {
-				if (typeof id === "number") await logInfoToConsole(id);
-				if (typeof id === "string")
-					await logInfoToConsole(parseInt(id));
+				if (typeof id === "number") await getInfo(id);
+				if (typeof id === "string") await getInfo(parseInt(id));
 			}
 		}
 	}
