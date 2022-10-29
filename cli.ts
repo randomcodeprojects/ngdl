@@ -7,10 +7,8 @@ import download from "download";
 (async () => {
 	const args = minimist(process.argv.slice(2));
 
-	const e = process.exit;
-
 	const OUT_DIR =
-		process.platform === "win32"
+		args.o || args.output || process.platform === "win32"
 			? `${process.env.USERPROFILE}\\Downloads`
 			: `${process.env.HOME}/ngdl`;
 
@@ -20,67 +18,49 @@ import download from "download";
 
 		await download(url, OUT_DIR, {
 			filename: `${sanitize(name) || id.toString()}.mp3`,
+			followRedirect: true,
 		});
 	}
 
-	async function getAudioInfo(id: number) {
+	async function logInfoToConsole(id: number) {
 		const info = await getMetaTags(id);
-		const TITLE = info["og:title"];
-		const DESCRIPTION = info["og:description"];
-		const URL = info["og:url"];
-		console.log(`Title: ${TITLE}
-Description: ${DESCRIPTION}
-URL: ${URL}`);
+		console.log(`Title: ${info["og:title"]}
+Description: ${info["og:description"]}
+URL: ${info["og:url"]}
+Image URL: ${info["og:image"]}
+`);
 	}
 
-	const help = () =>
-		console.log(`Usage:
-ngdl -d <id: number>
-ngdl -i <id: number>
-ngdl -v | --version
-ngdl -h | --help`);
+	const help = `Usage:
+ngdl -d <id: number> -> Downloads The Song With The Specified Id
+ngdl -i <id: number> -> Gets The Info Of The Song With The Specified Id
+ngdl -v -> Gets The Current Version
+ngdl -h -> Shows This Help Message`;
 
-	if (args.h || args.help) {
-		help();
-		e(0);
-	}
-
-	if (args.v || args.version) {
-		console.log(`ngdl version ${pkg.version}`);
-		e(0);
-	}
+	if (args.h) console.log(help);
+	if (args.v) console.log(`ngdl v${pkg.version}`);
 
 	if (args.d) {
-		if (typeof args.d === "number") {
-			await downloadAudio(args.d);
-			e(0);
+		if (typeof args.d === "number") await downloadAudio(args.d);
+		if (typeof args.d === "string") await downloadAudio(parseInt(args.d));
+		if (typeof args.d === "object" && Array.isArray(args.d)) {
+			for (let id of args.d) {
+				if (typeof id === "number") await downloadAudio(id);
+				if (typeof id === "string") await downloadAudio(parseInt(id));
+			}
 		}
-		if (typeof args.d === "string") {
-			await downloadAudio(parseInt(args.d));
-			e(0);
-		}
-		(args.d as any[]).forEach(async (id) => {
-			if (typeof id !== "number" || typeof id !== "string") e(1);
-			if (typeof id === "string") await downloadAudio(parseInt(id));
-			if (typeof id === "number") await downloadAudio(id);
-		});
-		e(0);
 	}
 
 	if (args.i) {
-		if (typeof args.i === "number") {
-			await getAudioInfo(args.i);
-			e(0);
+		if (typeof args.i === "number") await logInfoToConsole(args.i);
+		if (typeof args.i === "string")
+			await logInfoToConsole(parseInt(args.i));
+		if (typeof args.i === "object" && Array.isArray(args.i)) {
+			for (let id of args.i) {
+				if (typeof id === "number") await logInfoToConsole(id);
+				if (typeof id === "string")
+					await logInfoToConsole(parseInt(id));
+			}
 		}
-		if (typeof args.i === "string") {
-			await getAudioInfo(parseInt(args.i));
-			e(0);
-		}
-		(args.i as any[]).forEach(async (id) => {
-			if (typeof id !== "number" || typeof id !== "string") e(1);
-			if (typeof id === "string") await getAudioInfo(parseInt(id));
-			if (typeof id === "number") await getAudioInfo(id);
-		});
-		e(0);
 	}
 })();
