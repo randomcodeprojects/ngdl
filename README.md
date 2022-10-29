@@ -20,8 +20,14 @@ ngdl -d 109650
 ```
 
 ```sh
+ngdl -d 109650 -o .
+# Downloaded "Operation: Evolution" By Dimrain47 And Saved It To The Current Working Directory
+```
+
+```sh
 ngdl -i 109650
 # Title: Operation: Evolution
 # Description: Opens with HH, then reaches into techno and trance. Solo haters beware...
 # URL: https://www.newgrounds.com/audio/listen/109650
+# Image URL: https://img.ngfiles.com/defaults/icon-audio.png?f1578181335
 ```
